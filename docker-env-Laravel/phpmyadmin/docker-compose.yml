@@ -1,0 +1,34 @@
+version: "3.8"
+volumes:
+  db-store-hogehoge:
+  # php-fpm-socket:
+  php-practice-hogehoge:
+  pma-hogehoge:
+services:
+  web:
+    build: ./nginx
+    ports:
+      - 80:80
+    volumes:
+      - php-practice-hogehoge:/var/run/php-fpm
+      - ../backend:/work/backend
+
+  db:
+    build: ./mysql
+    volumes:
+      - db-store-hogehoge:/var/lib/mysql
+    ports:
+      - 3306:3306
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:fpm
+    ports:
+      - 8888:8080
+    environment:
+      - PMA_HOST=laravel_local
+      - PMA_PORT=3306
+      # - PMA_ABSOLUTE_URI=http://localhost/phpmyadmin
+    volumes:
+      - pma-hogehoge:/sessions
+    depends_on:
+      - db
